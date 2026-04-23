@@ -1,591 +1,769 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imtiaz Azad Emon | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --red: #e63946;
+            --dark: #0a0a0f;
+            --card: #111118;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f0;
+            --muted: #888;
+            --accent-glow: rgba(230,57,70,0.3);
+            --orange: #ff7b54;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Mulish', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+        }
 
-        <!--==================== UNICONS ====================-->
-        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-        
-        <!--==================== SWIPER CSS ====================-->
-        <link rel="stylesheet" href="./packages/css/swiper-bundle.min.css">
-        
-        <!--==================== CSS ====================-->
-        <link rel="stylesheet" href="./packages/css/styles.css">
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.3;
+        }
 
-        <title>EMON</title>
-    </head>
-    <body>
-        <!--==================== HEADER ====================-->
-        <header class="header" id="header">
-            <nav class="nav container">
-                <a href="#" class="nav__logo">IA,EMON</a>
-                <div class="nav__menu" id="nav-menu">
-                    <ul class="nav__list grid">
-                        <li class="nav__item">
-                            <a href="#home" class="nav__link">
-                                <i class="uil uil-estate nav__icon"></i>Home
-                            </a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="#about" class="nav__link">
-                                <i class="uil uil-user nav__icon"></i>About
-                            </a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="#skills" class="nav__link">
-                                <i class="uil uil-file-alt nav__icon"></i>Skills
-                            </a>
-                        </li>
-                         
-                        <li class="nav__item">
-                            <a href="#contact" class="nav__link">
-                                <i class="uil uil-message nav__icon"></i>Contact                               
-                            </a>
-                        </li>
-                    </ul>
-                    <i class="uil uil-times nav__close" id="nav-close"></i>
-                </div>
-                <div class="nav__btns">
-                    <!-- Theme change button -->
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 5%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10,10,15,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            animation: slideDown 0.8s ease forwards;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .logo span { color: var(--red); }
+        nav { display: flex; gap: 8px; }
+        nav a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        nav a:hover {
+            color: var(--text);
+            border-color: var(--border);
+            background: rgba(255,255,255,0.04);
+        }
 
-                    <i class="uil uil-moon change-theme" id="theme-button"></i>
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 0 8%;
+            padding-top: 70px;
+            gap: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(230,57,70,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-text { animation: fadeUp 1s 0.2s both; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.4s forwards;
+        }
+        .hero-eyebrow::before {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 1px;
+            background: var(--red);
+        }
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(40px, 5vw, 68px);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.5s forwards;
+        }
+        .hero h2 {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--muted);
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.6s forwards;
+        }
+        .hero p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #aaa;
+            max-width: 480px;
+            margin-bottom: 36px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.7s forwards;
+        }
+        .hero-contacts {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.8s forwards;
+        }
+        .hero-contacts a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .hero-contacts a:hover { color: var(--text); }
+        .hero-contacts i { color: var(--red); width: 16px; }
 
-                    <div class="nav__toggle" id="nav-toggle">
-                        <i class="uil uil-apps"></i>
-                    </div>
-                </div>
-            </nav>
-        </header>
+        .hero-visual {
+            position: relative;
+            animation: fadeUp 1s 0.3s both;
+        }
+        .img-frame {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .img-frame::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 26px;
+            background: linear-gradient(135deg, var(--red) 0%, transparent 50%, var(--red) 100%);
+            z-index: -1;
+            opacity: 0.4;
+            animation: rotateBorder 6s linear infinite;
+        }
+        @keyframes rotateBorder {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .img-frame img {
+            width: 100%;
+            height: 560px;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+            border-radius: 24px;
+            filter: grayscale(10%);
+            transition: filter 0.5s;
+        }
+        .img-frame:hover img { filter: grayscale(0%); }
 
-        <!--==================== MAIN ====================-->
-        <main class="main">
-            <!--==================== HOME ====================-->
-            <section class="home section" id="home">
-                <div class="home__container container grid">
-                    <div class="home__content grid">
-                        <div class="home__social">
-                            <a href="https://www.linkedin.com/in/iae/" target="_blank" class="home__social-icon">
-                                <i class="uil uil-linkedin-alt"></i>
-                            </a>
-                            <a href="https://x.com/iaemon28" target="_blank" class="home__social-icon">
-                                <i class="uil uil-twitter-alt"></i>
-                            </a>
-                            <a href="https://www.github.com/CYBER-F0X0" target="_blank" class="home__social-icon">
-                                <i class="uil uil-github-alt"></i>
-                            </a>
-                        </div>
+        .badge {
+            position: absolute;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            backdrop-filter: blur(10px);
+            animation: float 3s ease-in-out infinite;
+        }
+        .badge-exp { bottom: 30px; left: -30px; animation-delay: 0s; }
+        .badge-skill { top: 40px; right: -30px; animation-delay: 1.5s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .badge .num {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--red);
+            line-height: 1;
+        }
+        .badge .label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+        }
 
-                        <div class="home__img">
-                            <svg class="home__blob" viewBox="0 0 200 187" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <mask id="mask0" mask-type="alpha">
-                                    <path d="M190.312 36.4879C206.582 62.1187 201.309 102.826 182.328 134.186C163.346 165.547 
-                                    130.807 187.559 100.226 186.353C69.6454 185.297 41.0228 161.023 21.7403 129.362C2.45775 
-                                    97.8511 -7.48481 59.1033 6.67581 34.5279C20.9871 10.1032 59.7028 -0.149132 97.9666 
-                                    0.00163737C136.23 0.303176 174.193 10.857 190.312 36.4879Z"/>
-                                </mask>
-                                <g mask="url(#mask0)">
-                                    <path d="M190.312 36.4879C206.582 62.1187 201.309 102.826 182.328 134.186C163.346 
-                                    165.547 130.807 187.559 100.226 186.353C69.6454 185.297 41.0228 161.023 21.7403 
-                                    129.362C2.45775 97.8511 -7.48481 59.1033 6.67581 34.5279C20.9871 10.1032 59.7028 
-                                    -0.149132 97.9666 0.00163737C136.23 0.303176 174.193 10.857 190.312 36.4879Z"/>
-                                    <image class="home__blob-img" x="" xlink:href="packages/images/pras-1.jpeg"/>
-                                </g>
-                            </svg>
-                        </div>
+        section { padding: 100px 8%; }
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 16px;
+        }
+        .section-tag::before {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 1px;
+            background: var(--red);
+        }
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(32px, 4vw, 52px);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 60px;
+        }
 
-                        <div class="home__data">
-                            <h1 class="home__title">Hi, I'm IA,EMON</h1>
-                            <h3 class="home__subtitle">Computer Engineer</h3>
-                            <p class="home__description">Hello, I'm Imtiaz Azad Emon, a computer engineer born in 1987. I am married and a proud father of two children. Professionally, I work as a merchandiser, but my true passion lies in computer programming. Python is my favorite language, and I enjoy exploring its vast potential.</p>
-                            <a href="#contact" class="button button--flex home__button">
-                                Contact Me<i class="uil uil-message button__icon"></i>
-                            </a>
-                        </div>
-                    </div>
+        #skills { background: #0d0d14; }
+        .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .skill-group-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .skill-group-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+        .skill-item { margin-bottom: 24px; }
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .skill-pct { color: var(--orange); font-weight: 700; font-size: 13px; }
+        .bar-track {
+            height: 4px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            overflow: visible;
+            position: relative;
+        }
+        .bar-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--orange), var(--red));
+            transition: width 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .bar-fill::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: -5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--red);
+            box-shadow: 0 0 10px var(--accent-glow);
+            transform: scale(0);
+            transition: transform 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bar-fill.animated::after { transform: scale(1); }
 
-                    <div class="home__scroll">
-                        <a href="#about" class="home__scroll-button button--flex">
-                            <i class="uil uil-mouse-alt home__scroll-mouse"></i>
-                            <span class="home__scroll-name">Scroll Down</span>
-                            <i class="uil uil-arrow-down home__scroll-arrow"></i>
-                        </a>
-                    </div>
-                </div>
-            </section>
+        .timeline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .timeline-group h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .timeline-group h3 i { color: var(--red); font-size: 18px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--red), transparent);
+            border-radius: 3px;
+        }
+        .card:hover {
+            border-color: rgba(230,57,70,0.3);
+            transform: translateX(6px);
+        }
+        .card-date {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--red);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .card h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .card p { font-size: 14px; color: var(--muted); }
 
-            <!--==================== ABOUT ====================-->
-            <section class="about section" id="about">
-                <h2 class="section__title">About Me</h2>
-                <span class="section__subtitle">My Introduction</span>
+        #contact { background: #0d0d14; }
+        .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .contact-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .contact-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(230,57,70,0.08) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .contact-card:hover { border-color: rgba(230,57,70,0.35); transform: translateY(-6px); }
+        .contact-card:hover::after { opacity: 1; }
+        .qr-wrap {
+            display: inline-block;
+            padding: 10px;
+            background: white;
+            border-radius: 14px;
+            margin-bottom: 18px;
+        }
+        .qr-wrap img { width: 140px; height: 140px; display: block; border-radius: 8px; }
+        .contact-card h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .contact-card p { font-size: 14px; color: var(--muted); line-height: 1.8; position: relative; z-index: 1; }
+        .contact-card strong { color: var(--text); }
 
-                <div class="about__container container grid">
-                    <img src="packages/images/pras-2.jpeg" alt="" class="about__img">
-                    <div class="about__data">
-                        <p class="about__description">
-                            I specialize in web design and development, cybersecurity research, graphic and label design, and photo and video editing
-                        </p>
-                        <div class="about__info">
-                            <div>
-                                <span class="about__info-title">03+</span>
-                                <span class="about__info-name">Years <br> experience</span>
-                            </div>
-                            <div>
-                                <span class="about__info-title">04+</span>
-                                <span class="about__info-name">Completed <br> certifications</span>
-                            </div>
-                            <div>
-                                <span class="about__info-title">03+</span>
-                                <span class="about__info-name">companies<br>worked</span>
-                            </div>
-                        </div>
+        .lang-item { margin-bottom: 16px; text-align: left; }
+        .lang-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .lang-row span:last-child { color: var(--red); font-weight: 600; }
+        .lang-bar { height: 3px; background: var(--border); border-radius: 3px; }
+        .lang-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--orange), var(--red));
+            transition: width 1.4s ease;
+        }
 
-                        <div class="about__buttons">
-                            <a download="" href="packages/pdf/" class="button button--flex">
-                                Download CV<i class="https://drive.google.com/file/d/1aPSE-OrNckUBmkA83GYNP4PzkOOjCj8P/view?usp=sharing"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--muted);
+        }
 
-            <!--==================== SKILLS ====================-->
-            <section class="skills section" id="skills">
-                <h2 class="section__title">Skills</h2>
-                <span class="section__subtitle">My Technical Level</span>
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal.visible { opacity: 1; transform: none; }
+        .reveal:nth-child(2) { transition-delay: 0.1s; }
+        .reveal:nth-child(3) { transition-delay: 0.2s; }
+        .reveal:nth-child(4) { transition-delay: 0.3s; }
 
-                <div class="skills__container container grid">
-                    <div>
-                         <!--==================== SKILL-1 ====================-->
-                        <div class="skills__content skills__open">
-                            <div class="skills__header">
-                                <i class="uil uil-analytics skills__icon"></i>
-                               <div>
-                                   <h1 class="skills__title">Cyber Security</h1>
-                                   <span class="skills__subtitle">More than 2 years</span>
-                               </div>
+        .cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(230,57,70,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: left 0.15s ease, top 0.15s ease;
+        }
 
-                               <i class="uil uil-angle-down skills__arrow"></i>
-                            </div>
-                            <div class="skills__list grid">
-                                <div class="skills__data">
-                                    <div class="skills__titles">
-                                        <h3 class="skills__name">Penetration Testing</h3>
-                                        <span class="skills__number">60%</span>
-                                    </div>
-                                    <div class="skills__bar">
-                                        <span class="skills__percentage skills__python"></span>
-                                    </div>
-                                </div>
-                               <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">Malware Analysis </h3>
-                                       <span class="skills__number">50%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__tab"></span>
-                                   </div>
-                               </div>
-                               <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">Python</h3>
-                                       <span class="skills__number">50%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__sql"></span>
-                                   </div>
-                               </div>
-                               <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">Linux</h3>
-                                       <span class="skills__number">70%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__google"></span>
-                                   </div>
-                               </div>
-                            </div>
-                        </div>
-                         <!--==================== SKILLS 2 ====================-->
-                        <div class="skills__content skills__close">
-                            <div class="skills__header">
-                                <i class="uil uil-money-bill skills__icon"></i>
-                               <div>
-                                   <h1 class="skills__title">Graphic & Label Design</h1>
-                                   <span class="skills__subtitle">More than 3 years</span>
-                               </div>
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; gap: 50px; padding-top: 100px; }
+            .hero-visual { order: -1; }
+            .img-frame img { height: 380px; }
+            .badge-exp, .badge-skill { display: none; }
+            .skills-grid, .timeline-grid, .contact-grid { grid-template-columns: 1fr; }
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
 
-                               <i class="uil uil-angle-down skills__arrow"></i>
-                            </div>
-                            <div class="skills__list grid">
-                                <div class="skills__data">
-                                    <div class="skills__titles">
-                                        <h3 class="skills__name">Thermal Label</h3>
-                                        <span class="skills__number">80%</span>
-                                    </div>
-                                    <div class="skills__bar">
-                                        <span class="skills__percentage skills__bank"></span>
-                                    </div>
-                               </div>
-                               <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">UI/UX Design</h3>
-                                       <span class="skills__number">80%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__counter"></span>
-                                   </div>
-                               </div>
-                               <div class="skills__data">
-                                    <div class="skills__titles">
-                                      <h3 class="skills__name">Woven Label Design</h3>
-                                      <span class="skills__number">40%</span>
-                                    </div>
-                                    <div class="skills__bar">
-                                       <span class="skills__percentage skills__google"></span>
-                                    </div>
-                                </div>
-                                <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">Logo Design</h3>
-                                       <span class="skills__number">90%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__office"></span>
-                                   </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div class="cursor-glow" id="glow"></div>
 
-                    <div>
-                        <!--==================== SKILLS 3 ====================-->
-                        <div class="skills__content skills__close">
-                            <div class="skills__header">
-                               <i class="uil uil-brackets-curly skills__icon"></i>
-                               <div>
-                                   <h1 class="skills__title">Web Design & Development</h1>
-                                   <span class="skills__subtitle">More than 3 years</span>
-                               </div>
+<header>
+    <a href="#home" class="logo">IMTIAZ<span>.</span></a>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#skills">Skills</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
 
-                               <i class="uil uil-angle-down skills__arrow"></i>
-                            </div>
-                            <div class="skills__list grid">
-                                <div class="skills__data">
-                                    <div class="skills__titles">
-                                        <h3 class="skills__name">HTML</h3>
-                                        <span class="skills__number">70%</span>
-                                    </div>
-                                    <div class="skills__bar">
-                                        <span class="skills__percentage skills__html"></span>
-                                    </div>
-                                </div>
-                               <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">CSS</h3>
-                                       <span class="skills__number">60%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__css"></span>
-                                   </div>
-                               </div>
-                               <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">Php</h3>
-                                       <span class="skills__number">50%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__js"></span>
-                                   </div>
-                               </div>
-                               <div class="skills__data">
-                                   <div class="skills__titles">
-                                       <h3 class="skills__name">WordPress</h3>
-                                       <span class="skills__number">70%</span>
-                                   </div>
-                                   <div class="skills__bar">
-                                       <span class="skills__percentage skills__wordpress"></span>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                    </div>
-                </div>
-            </section>
-
-              <!--==================== QUALIFICATION ====================-->
-        <section class="qualification__section">
-            <h2 class="section__title">Qualification</h2>
-            <span class="section__subtitle">My personal journey</span>
-
-            <div class="qualification__container container">
-                <div class="qualification__tabs">
-                    <div class="qualification__button button--flex qualification__active" data-target='#education'>
-                        <i class="uil uil-graduation-cap qualification__icon"></i>
-                        Education
-                    </div>
-
-                    <div class="qualification__button button--flex" data-target="#work">
-                        <i class="uil uil-briefcase-alt qualification__icon"></i>
-                        Work
-                    </div>
-                </div>
-
-                <div class="qualification__sections">
-            <!--==================== QUALIFICATION CONTENT 1 ====================-->
-            <div class="qualification__content qualification__active" data-content id="education">
-             <!--==================== QUALIFICATION 1 ====================--> 
-             <div class="qualification__data">
-                 <div>
-                     <h3 class="qualification__title">Diploma In Computer Engineering </h3>
-                     <span class="qualification__subtitle">Institute Of Communication Technology, Dhaka</span>
-                     <div class="qualification__calendar">
-                        <i class="uil uil-calendar-alt"></i>
-                        2012 - 2016
-                     </div>
-                 </div>
-
-                 <div>
-                     <span class="qualification__rounder"></span>
-                     <span class="qualification__line"></span>
-                 </div>
-             </div>
-             
-             <!--==================== QUALIFICATION 2 ====================--> 
-             <div class="qualification__data">
-                <div></div>
-                <div>
-                   <span class="qualification__rounder"></span>
-                   <span class="qualification__line"></span>
-                </div>
-
-                <div>
-                    <h3 class="qualification__title">Internship (Web Design & Development )</h3>
-                    <span class="qualification__subtitle">Binary It - Dhaka </span>
-                    <div class="qualification__calendar">
-                       <i class="uil uil-calendar-alt"></i>
-                       2012 - 2014
-                    </div>
-                </div>
-            </div> 
-
-            <!--==================== QUALIFICATION 3 ====================--> 
-            <div class="qualification__data">
-                <div>
-                    <h3 class="qualification__title">Secondary School Certificate</h3>
-                    <span class="qualification__subtitle">B O U, Barguna</span>
-                    <div class="qualification__calendar">
-                       <i class="uil uil-calendar-alt"></i>
-                       2015 - 2018
-                    </div>
-                </div>
-
-                <div>
-                    <span class="qualification__rounder"></span>
-                    <span class="qualification__line"></span>
-                </div>
-            </div> 
-
-             <!--==================== QUALIFICATION 4 ====================--> 
-            <div class="qualification__data">
-                <div></div>
-                <div>
-                    <span class="qualification__rounder"></span>
-                   <!-- <span class="qualification__line"></span> -->
-                </div>
-
-                <div>
-                    <h3 class="qualification__title">   </h3>
-                    <span class="qualification__subtitle">   </span>
-                    
-                    </div>
-                </div>
-
-                
-            </div>
-            </div>
-            
-            <!--==================== QUALIFICATION CONTENT 2 ====================-->
-            <div class="qualification__content" data-content id="work">
-                <!--==================== QUALIFICATION 1 ====================--> 
-                <div class="qualification__data">
-                    <div>
-                        <h3 class="qualification__title">
-Assistant Merchandiser</h3>
-                        <span class="qualification__subtitle">blitz shanghai co. ltd  - Uttara,Dhaka</span>
-                        <div class="qualification__calendar">
-                           <i class="uil uil-calendar-alt"></i>
-                           2021 - 2014 - Present
-                        </div>
-                    </div>
-   
-                    <div>
-                        <span class="qualification__rounder"></span>
-                        <span class="qualification__line"></span>
-                    </div>
-                </div>
-                
-                <!--==================== QUALIFICATION 2 ====================--> 
-                <div class="qualification__data">
-                   <div></div>
-                   <div>
-                      <span class="qualification__rounder"></span>
-                      <span class="qualification__line"></span>
-                   </div>
-   
-                   <div>
-                       <h3 class="qualification__title">Senior It Executive</h3>
-                       <span class="qualification__subtitle">Niong Tech Corporation - Uttara,Dhaka</span>
-                       <div class="qualification__calendar">
-                          <i class="uil uil-calendar-alt"></i>
-                          2016 - 2021
-                       </div>
-                   </div>
-               </div> 
-   
-               <!--==================== QUALIFICATION 3 ====================--> 
-               <div class="qualification__data">
-                   <div>
-                       <h3 class="qualification__title">Internship Trainee</h3>
-                       <span class="qualification__subtitle">Binary It - Uttara,Dhaka </span>
-                       <div class="qualification__calendar">
-                          <i class="uil uil-calendar-alt"></i>
-                          2015 - 2016 
-                       </div>
-                   </div>
-   
-                   <div>
-                       <span class="qualification__rounder"></span>
-                       <!-- <span class="qualification__line"></span> -->
-                   </div>
-               </div> 
-          
-               </div> 
-             
-               </div>
-            </div>
-        </section>
-      
-      
-
-       <!--==================== CONTACT ME ====================-->
-        <section class="contact section" id="contact">
-            <h2 class="section__title">Contact me</h2>
-            <span class="section__subtitle">Get in touch</span>
-
-            <div class="contact__container container grid">
-                <div>
-                    <div class="contact__information">
-                        <i class="uil uil-phone-alt contact__icon"></i>
-
-                        <div>
-                            <h3 class="contact__title">Call me</h3>
-                            <span class="contatc__subtitle">(+88) 01719264759</span>
-                        </div>
-                    </div>
-
-                    <div class="contact__information">
-                        <i class="uil uil-envelope contact__icon"></i>
-
-                        <div>
-                            <h3 class="contact__title">E-mail</h3>
-                            <span class="contatc__subtitle">iaemon28@gmail.com</span>
-                        </div>
-                    </div>
-
-                    <div class="contact__information">
-                        <i class="uil uil-map-marker contact__icon"></i>
-
-                        <div>
-                            <h3 class="contact__title">Location</h3>
-                            <span class="contatc__subtitle">Dhaka, Bangladesh</span>
-                        </div>
-                    </div>
-                </div>
-
-                <form action="" class="contact__form grid">
-                    <div class="contact__inputs grid">
-                        <div class="contact__content">
-                            <label for="" class="contact__label">Name</label>
-                            <input type="text" class="contact__input">
-                        </div>
-
-                        <div class="contact__content">
-                            <label for="" class="contact__label">E-mail</label>
-                            <input type="email" class="contact__input">
-                        </div>
-                    </div>
-
-                    <div class="contact__content">
-                        <label for="" class="contact__label">Subject</label>
-                        <input type="text" class="contact__input">
-                    </div>
-
-                    <div class="contact__content">
-                        <label for="" class="contact__label">Description</label>
-                        <textarea name="" id="" cols="0" rows="7" class="contact__input"></textarea>
-                    </div>
-
-                    <div>
-                        <a href="#" class="button button--flex">
-                            Send message
-                            <i class="uil uil-message button__icon"></i>
-                        </a>
-                    </div>
-                </form>
-            </div>
-
-        </section>
-    </main>
-
-    <!--==================== FOOTER ====================-->
-    <footer class="footer">
-
-        <div class="footer__bg">
-            <div class="footer__container container grid">
-                <div>
-                    <h1 class="footer__title">Ia Emon</h1>
-                    <span class="footer__subtitle">Computer Engineer</span>
-                </div>
-
-                <ul class="footer__links">
-                    
-                    <li>
-                        <a href="#home" class="footer__link">Home</a>
-                    </li>
-                    <li>
-                        <a href="#contact" class="footer__link">Contact</a>
-                    </li>
-                </ul>
-
-                <div class="footer__socials">
-                    <a href="https://www.facebook.com/iaemon28" target="_blank" class="footer__social">
-                        <i class="uil uil-facebook"></i>
-                    </a>
-                    <a href="https://www.instagram.com/iaemon/" target="_blank" class="footer__social">
-                        <i class="uil uil-instagram"></i>
-                    </a>
-                    <a href="https://x.com/iaemon28" target="_blank" class="footer__social">
-                        <i class="uil uil-twitter-alt"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <p class="footer__copy">&#169;iae. All rights reserved.</p>
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="home">
+    <div class="hero-text">
+        <div class="hero-eyebrow">Hello, I&rsquo;m</div>
+        <h1>Imtiaz<br>Azad Emon</h1>
+        <h2>Computer Engineer &amp; Store &amp; QC Manager</h2>
+        <p>Born in 1987 in Barguna, I have over four years of experience in the garment accessories industry. Currently optimizing operations and ensuring quality control as a Store &amp; QC Manager at Blitz Shanghai Co. Ltd.</p>
+        <div class="hero-contacts">
+            <a href="mailto:iaemon28@gmail.com"><i class="fas fa-envelope"></i> iaemon28@gmail.com</a>
+            <a href="#"><i class="fas fa-phone"></i> +880 1719 264 759</a>
+            <a href="#"><i class="fas fa-map-marker-alt"></i> Uttara, Dhaka, Bangladesh</a>
         </div>
-    </footer>
+    </div>
 
-    <!--==================== SCROLL TOP ====================-->
-    <a href="#" class="scrollup" id="scroll-up">
-        <i class="uil uil-arrow-up scrollup__icon"></i>
-    </a>
-    
+    <div class="hero-visual">
+        <div class="img-frame">
+            <img src="photo.png" alt="Imtiaz Azad Emon">
+        </div>
+        <div class="badge badge-exp">
+            <div class="num">4+</div>
+            <div class="label">Years Experience</div>
+        </div>
+        <div class="badge badge-skill">
+            <div class="num">16</div>
+            <div class="label">Core Skills</div>
+        </div>
+    </div>
+</section>
 
-    <!--==================== SWIPER JS ====================-->
-    <script src="./packages/js/swiper-bundle.min.js"></script>
+<!-- ===================== SKILLS ===================== -->
+<section id="skills">
+    <div class="section-tag">Expertise</div>
+    <div class="section-title">Skills &amp; Proficiency</div>
+    <div class="skills-grid">
+        <!-- Technical Skills -->
+        <div class="reveal">
+            <div class="skill-group-title"><i class="fas fa-code" style="font-size:14px;"></i> Technical Skills</div>
 
-    <!--==================== MAIN JS ====================-->
-    <script src="./packages/js/main.js"></script>
+            <div class="skill-item">
+                <div class="skill-info"><span>Web &amp; UX/UI Design</span><span class="skill-pct">85%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="85"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>WordPress</span><span class="skill-pct">70%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="70"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Cyber Security</span><span class="skill-pct">2+ Years</span></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Penetration Testing</span><span class="skill-pct">60%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="60"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Malware Analysis</span><span class="skill-pct">50%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="50"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Python</span><span class="skill-pct">50%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="50"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Linux</span><span class="skill-pct">70%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="70"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>HTML</span><span class="skill-pct">70%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="70"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>CSS</span><span class="skill-pct">60%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="60"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>PHP</span><span class="skill-pct">50%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="50"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Logo Design</span><span class="skill-pct">90%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="90"></div></div>
+            </div>
+        </div>
+
+        <!-- Professional Skills -->
+        <div class="reveal">
+            <div class="skill-group-title"><i class="fas fa-briefcase" style="font-size:14px;"></i> Professional Skills</div>
+
+            <div class="skill-item">
+                <div class="skill-info"><span>Thermal Label Print &amp; Design</span><span class="skill-pct">80%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="80"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Woven Label Design</span><span class="skill-pct">40%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="40"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Garments Accessories</span><span class="skill-pct">95%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="95"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Merchandising</span><span class="skill-pct">90%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="90"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>Store Management</span><span class="skill-pct">95%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="95"></div></div>
+            </div>
+            <div class="skill-item">
+                <div class="skill-info"><span>MS Office Suite</span><span class="skill-pct">95%</span></div>
+                <div class="bar-track"><div class="bar-fill" data-width="95"></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== EXPERIENCE ===================== -->
+<section id="experience">
+    <div class="section-tag">Background</div>
+    <div class="section-title">Experience &amp; Education</div>
+    <div class="timeline-grid">
+        <div>
+            <div class="timeline-group">
+                <h3><i class="fas fa-briefcase"></i> Work History</h3>
+                <div class="card reveal">
+                    <div class="card-date">March 2024 &mdash; Present</div>
+                    <h4>Manager Store, QC &amp; Logistics</h4>
+                    <p>Blitz Shanghai Co. Ltd Bangladesh</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-date">June 2021 &mdash; March 2024</div>
+                    <h4>Junior Merchandiser</h4>
+                    <p>Blitz Shanghai Co. Ltd Bangladesh</p>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="timeline-group">
+                <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+                <div class="card reveal">
+                    <div class="card-date">2012 &mdash; 2016</div>
+                    <h4>Diploma in Computer Engineering</h4>
+                    <p>Institute of Communication Technology, Uttara</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-date">6-Month Training</div>
+                    <h4>Web Design &amp; Development</h4>
+                    <p>Binary IT, Uttara</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact">
+    <div class="section-tag">Get in Touch</div>
+    <div class="section-title">Contact &amp; Info</div>
+    <div class="contact-grid">
+        <div class="contact-card reveal">
+            <div class="qr-wrap">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=e63946&bgcolor=ffffff&data=BEGIN%3AVCARD%0AVERSION%3A3.0%0AFN%3AImtiaz%20Azad%20Emon%0AEMAIL%3Aiaemon28%40gmail.com%0AADR%3A%3B%3BUttara%3BDhaka%3B%3B%3BBangladesh%0AEND%3AVCARD" alt="vCard QR Code">
+            </div>
+            <h4>Scan to Save Contact</h4>
+            <p>Scan with your phone camera<br>to save my contact details instantly</p>
+        </div>
+        <div class="contact-card reveal">
+            <h4>Reference</h4>
+            <p>
+                <strong>Captain Harun Ar Rashid</strong><br>
+                Country Director<br>
+                Blitz Shanghai Co. Ltd<br>
+                <a href="mailto:harun@blitzcorp.com" style="color: var(--red); text-decoration: none;">harun@blitzcorp.com</a>
+            </p>
+        </div>
+        <div class="contact-card reveal">
+            <h4>Languages</h4>
+            <div class="lang-item">
+                <div class="lang-row"><span>Bangla</span><span>100%</span></div>
+                <div class="lang-bar"><div class="lang-fill" data-width="100" style="width:0"></div></div>
+            </div>
+            <div class="lang-item">
+                <div class="lang-row"><span>Hindi</span><span>70%</span></div>
+                <div class="lang-bar"><div class="lang-fill" data-width="70" style="width:0"></div></div>
+            </div>
+            <div class="lang-item">
+                <div class="lang-row"><span>English</span><span>60%</span></div>
+                <div class="lang-bar"><div class="lang-fill" data-width="60" style="width:0"></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2026 Imtiaz Azad Emon. Crafted with care.</p>
+</footer>
+
+<script>
+const glow = document.getElementById('glow');
+document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+    });
+}, { threshold: 0.1 });
+reveals.forEach(el => revealObs.observe(el));
+
+const skillsSection = document.getElementById('skills');
+let skillsAnimated = false;
+const skillObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !skillsAnimated) {
+        skillsAnimated = true;
+        document.querySelectorAll('.bar-fill').forEach((bar, i) => {
+            const w = bar.getAttribute('data-width');
+            setTimeout(() => {
+                bar.style.width = w + '%';
+                bar.classList.add('animated');
+            }, i * 80);
+        });
+        document.querySelectorAll('.lang-fill').forEach((bar, i) => {
+            const w = bar.getAttribute('data-width');
+            setTimeout(() => {
+                bar.style.width = w + '%';
+            }, i * 150);
+        });
+    }
+}, { threshold: 0.2 });
+skillObs.observe(skillsSection);
+
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    document.querySelectorAll('section').forEach(sec => {
+        const top = sec.offsetTop - 100;
+        const bottom = top + sec.offsetHeight;
+        const id = sec.getAttribute('id');
+        const link = document.querySelector(`nav a[href="#${id}"]`);
+        if (link) {
+            if (scrollY >= top && scrollY < bottom) {
+                link.style.color = '#f0f0f0';
+                link.style.borderColor = 'rgba(255,255,255,0.15)';
+            } else {
+                link.style.color = '';
+                link.style.borderColor = '';
+            }
+        }
+    });
+});
+
+const h1 = document.querySelector('.hero h1');
+const originalText = h1.innerHTML;
+h1.innerHTML = '';
+let i = 0;
+const chars = originalText.split('');
+function typeChar() {
+    if (i < chars.length) {
+        h1.innerHTML += chars[i];
+        i++;
+        setTimeout(typeChar, 35);
+    }
+}
+setTimeout(typeChar, 600);
+
+document.querySelectorAll('.badge .num').forEach(el => {
+    const target = parseInt(el.textContent);
+    const plus = el.textContent.includes('+');
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const interval = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current + (plus ? '+' : '');
+        if (current >= target) clearInterval(interval);
+    }, 40);
+});
+</script>
 </body>
-
 </html>
