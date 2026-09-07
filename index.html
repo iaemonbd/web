@@ -81,10 +81,12 @@ function installProtection(){
 
     let wasOpen=false;
     const checkDevTools=()=>{
-      const threshold=160;
-      const open =
-        Math.abs(window.outerWidth-window.innerWidth)>threshold ||
-        Math.abs(window.outerHeight-window.innerHeight)>threshold;
+      /* Chrome's normal browser chrome can create a ~160px height gap.
+         Use a larger threshold to avoid false positives on ordinary pages. */
+      const threshold=240;
+      const widthGap=Math.abs(window.outerWidth-window.innerWidth);
+      const heightGap=Math.abs(window.outerHeight-window.innerHeight);
+      const open = widthGap>threshold || heightGap>threshold;
       if(open && !wasOpen){
         restricted.hidden=false;
         wasOpen=true;
