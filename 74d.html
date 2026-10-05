@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CSE 74D Class Routine</title>
+<style>
+:root{
+  --bg:#0f141b;--card:#171d27;--ink:#edf3ff;--mute:#b5bdd0;--line:#2b3342;
+  --off:#7aa5ff;--off-bg:#1a294a;--on:#61d7aa;--on-bg:#153d33;--brk:#7d879d;
+  --warn:#f0c06b;--warn-bg:#3a2d12;--lift-bg:#e7edf8;--lift-ink:#121a27;
+  --shadow:0 18px 45px rgba(2,6,23,.45);
+  --soft-ring:rgba(122,165,255,.18);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141b;--card:#171d27;--ink:#edf3ff;--mute:#b5bdd0;--line:#2b3342;
+    --off:#7aa5ff;--off-bg:#1a294a;--on:#61d7aa;--on-bg:#153d33;--brk:#7d879d;
+    --warn:#f0c06b;--warn-bg:#3a2d12;--lift-bg:#e7edf8;--lift-ink:#121a27;
+    --shadow:0 22px 55px rgba(2,6,23,.5);
+    --soft-ring:rgba(122,165,255,.18);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f141b;--card:#171d27;--ink:#edf3ff;--mute:#b5bdd0;--line:#2b3342;
+  --off:#7aa5ff;--off-bg:#1a294a;--on:#61d7aa;--on-bg:#153d33;--brk:#7d879d;
+  --warn:#f0c06b;--warn-bg:#3a2d12;--lift-bg:#e7edf8;--lift-ink:#121a27;
+  --shadow:0 22px 55px rgba(2,6,23,.5);
+  --soft-ring:rgba(122,165,255,.18);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+*{box-sizing:border-box}
+body{
+  margin:0;background:
+    radial-gradient(circle at top left, rgba(91,119,170,.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(97,215,170,.12), transparent 25%),
+    var(--bg);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Bengali",Arial,sans-serif;
+  -webkit-text-size-adjust:100%;line-height:1.4;
+}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 42px}
+.hero{
+  padding:26px 8px 10px;
+}
+.hero h1{
+  margin:0;font-size:30px;line-height:1.15;letter-spacing:-.03em;
+  font-weight:800;
+}
+.hero p{margin:8px 0 0;color:var(--mute);font-size:15px;font-weight:600}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{
+  display:inline-block;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;
+  white-space:nowrap;border:1px solid transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)
+}
+.c-off{background:var(--off-bg);color:var(--off)}
+.c-on{background:var(--on-bg);color:var(--on)}
+.c-dur{background:var(--line);color:var(--mute)}
+.c-upd{background:var(--warn-bg);color:var(--warn)}
+.c-today{background:var(--ink);color:var(--bg)}
+.c-lift{background:var(--lift-bg);color:var(--lift-ink)}
+.tabs{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:5;
+  display:flex;gap:8px;overflow-x:auto;padding:12px 6px 8px;margin:0 -6px;
+  background:linear-gradient(to bottom, rgba(15,20,27,.96), rgba(15,20,27,.72));
+  backdrop-filter:blur(10px);scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;min-height:44px;padding:0 16px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);
+  font-family:inherit;font-size:14px;font-weight:700;line-height:1;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 14px rgba(2,6,23,.22);
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.tab:hover{transform:translateY(-1px);box-shadow:0 10px 16px rgba(2,6,23,.28)}
+.tab .dot{width:8px;height:8px;border-radius:50%;background:var(--brk)}
+.tab .dot.offline{background:var(--off)}
+.tab .dot.online{background:var(--on)}
+.tab.act{
+  background:linear-gradient(135deg, #1d2330, #090d13);color:var(--ink);border-color:var(--line);
+  box-shadow:0 14px 24px rgba(2,6,23,.38);
+}
+.tab:focus-visible{outline:3px solid var(--soft-ring);outline-offset:2px}
+.dayhead{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin:18px 2px 12px;padding:8px 0 0;
+}
+.dayhead h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.dayhead .tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.list{display:grid;gap:12px}
+.slot{
+  --accent:var(--brk);
+  background:linear-gradient(180deg, rgba(23,29,39,.98), rgba(18,23,31,.97));
+  border:1px solid var(--line);border-left:5px solid var(--accent);
+  border-radius:18px;padding:14px 16px;display:grid;gap:9px;
+  box-shadow:var(--shadow);transition:transform .2s ease, box-shadow .2s ease;
+}
+.slot:hover{transform:translateY(-1px)}
+.slot.offline{--accent:var(--off)}
+.slot.online{--accent:var(--on)}
+.slot.break{
+  background:transparent;border-style:dashed;border-left-style:dashed;padding:12px 14px;
+  box-shadow:none;border-radius:14px;
+}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.time{font-size:14px;font-weight:700;color:var(--mute);font-variant-numeric:tabular-nums}
+.title{margin:0;font-size:17px;line-height:1.35;font-weight:800;letter-spacing:-.01em}
+.slot.break .title{font-size:15px;font-weight:700;color:var(--mute)}
+.code{font-size:12px;color:var(--mute);letter-spacing:.02em;font-weight:600}
+.teacher{font-size:14px;color:var(--mute);font-weight:600}
+.loc{display:flex;gap:6px;flex-wrap:wrap}
+.loc .chip{font-size:12.5px;padding:5px 10px}
+@media (min-width: 540px){
+  .wrap{padding-left:18px;padding-right:18px}
+  .slot{padding:16px 18px}
+  .hero h1{font-size:34px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>Class Routine</h1>
+    <p>CSE 74D, Fall 2026</p>
+    <div class="legend">
+      <span class="chip c-off">On campus: Fri, Sat</span>
+      <span class="chip c-on">Online: Mon, Tue, Wed</span>
+    </div>
+  </header>
+  <nav class="tabs" id="tabs" aria-label="Choose a day"></nav>
+  <main id="view"></main>
+</div>
+<script>
+(function () {
+  // Lift number for each room. Change a number here if a room is on a different lift.
+  var LIFT = { "307": 2, "402": 3, "403": 3, "201": 1 };
+
+  function R(s, e, title, code, teacher, room, label) {
+    return { s: s, e: e, title: title, code: code, teacher: teacher, room: room, label: label, kind: "offline" };
+  }
+  function O(s, e, title, code, teacher, updated) {
+    return { s: s, e: e, title: title, code: code, teacher: teacher, kind: "online", updated: !!updated };
+  }
+  function B(s, e, title) {
+    return { s: s, e: e, title: title, kind: "break" };
+  }
+
+  var DAYS = [
+    { id: 5, name: "Friday", short: "Fri", mode: "offline", slots: [
+      R("08:00", "10:30", "Discrete Math", "MAT 06882124", "Shamsun Nahar", "307", "Room 307"),
+      R("10:30", "13:00", "Intro to Programming", "CSE 06131209", "Shihab Uddin Sikder", "403", "Room 403"),
+      B("13:00", "14:20", "Break and prayer"),
+      R("14:20", "16:50", "Physics-I", "PHY 05331104", "Dr. Shafiul Islam", "402", "Room 402"),
+      R("16:50", "17:40", "Professional Communication", "ENG 02311216", "Md. Atik Ullah Masud", "402", "Room 402")
+    ] },
+    { id: 6, name: "Saturday", short: "Sat", mode: "offline", slots: [
+      R("08:00", "13:00", "Intro to Programming Lab", "CSE 06131210", "Shihab Uddin Sikder", "201", "Lab 201")
+    ] },
+    { id: 1, name: "Monday", short: "Mon", mode: "online", slots: [
+      O("21:00", "22:00", "Physics-I", "PHY 05331104", "Dr. Shafiul Islam")
+    ] },
+    { id: 2, name: "Tuesday", short: "Tue", mode: "online", slots: [
+      O("19:00", "20:00", "Intro to Programming", "CSE 06131209", "Shihab Uddin Sikder"),
+      O("20:00", "21:00", "Discrete Math", "MAT 06882124", "Shamsun Nahar")
+    ] },
+    { id: 3, name: "Wednesday", short: "Wed", mode: "online", updated: true, slots: [
+      O("20:00", "21:00", "Professional Communication", "ENG 02311216", "Md. Atik Ullah Masud", true)
+    ] }
+  ];
+
+  var todayId = new Date().getDay();
+  var hasToday = DAYS.some(function (d) { return d.id === todayId; });
+  var sel = hasToday ? todayId : "all";
+
+  function t12(t) {
+    var p = t.split(":");
+    var h = Number(p[0]);
+    var m = p[1];
+    return ((h % 12) || 12) + ":" + m + " " + (h >= 12 ? "PM" : "AM");
+  }
+  function mins(t) {
+    var p = t.split(":");
+    return Number(p[0]) * 60 + Number(p[1]);
+  }
+  function dur(s, e) {
+    var d = mins(e) - mins(s);
+    var h = Math.floor(d / 60);
+    var m = d % 60;
+    var out = "";
+    if (h) out += h + "h";
+    if (m) out += (out ? " " : "") + m + "m";
+    return out;
+  }
+
+  function slotHtml(x) {
+    var range = t12(x.s) + " to " + t12(x.e);
+    if (x.kind === "break") {
+      return '<article class="slot break"><div class="row"><span class="time">' + range +
+        '</span></div><h3 class="title">' + x.title + "</h3></article>";
+    }
+    var tags = '<span class="chip c-dur">' + dur(x.s, x.e) + "</span>";
+    if (x.updated) tags = '<span class="chip c-upd">New time</span>' + tags;
+    var loc;
+    if (x.kind === "offline") {
+      var lift = LIFT[x.room];
+      loc = '<span class="chip c-off">' + x.label + "</span>";
+      if (lift) loc += '<span class="chip c-lift">Lift ' + lift + "</span>";
+    } else {
+      loc = '<span class="chip c-on">Online live class</span>';
+    }
+    return '<article class="slot ' + x.kind + '">' +
+      '<div class="row"><span class="time">' + range + '</span><span class="row" style="gap:6px">' + tags + "</span></div>" +
+      '<div><h3 class="title">' + x.title + '</h3><span class="code">' + x.code + "</span></div>" +
+      '<div class="teacher">' + x.teacher + "</div>" +
+      '<div class="loc">' + loc + "</div></article>";
+  }
+
+  function dayHtml(d) {
+    var tags = "";
+    if (d.id === todayId) tags += '<span class="chip c-today">Today</span>';
+    if (d.updated) tags += '<span class="chip c-upd">Updated</span>';
+    tags += d.mode === "offline"
+      ? '<span class="chip c-off">On campus</span>'
+      : '<span class="chip c-on">Online</span>';
+    return '<section><div class="dayhead"><h2>' + d.name + '</h2><div class="tags">' + tags + "</div></div>" +
+      '<div class="list">' + d.slots.map(slotHtml).join("") + "</div></section>";
+  }
+
+  function renderTabs() {
+    var h = '<button class="tab' + (sel === "all" ? " act" : "") + '" data-id="all">All</button>';
+    DAYS.forEach(function (d) {
+      h += '<button class="tab' + (sel === d.id ? " act" : "") + '" data-id="' + d.id + '">' +
+        '<span class="dot ' + d.mode + '"></span>' + d.short + "</button>";
+    });
+    var tabs = document.getElementById("tabs");
+    tabs.innerHTML = h;
+    var a = tabs.querySelector(".act");
+    if (a && a.scrollIntoView) a.scrollIntoView({ inline: "center", block: "nearest" });
+  }
+
+  function render() {
+    var list = sel === "all" ? DAYS : DAYS.filter(function (d) { return d.id === sel; });
+    document.getElementById("view").innerHTML = list.map(dayHtml).join("");
+    renderTabs();
+  }
+
+  document.getElementById("tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-id]");
+    if (!b) return;
+    sel = b.getAttribute("data-id") === "all" ? "all" : Number(b.getAttribute("data-id"));
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
